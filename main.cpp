@@ -1,6 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <linux/fs.h>
+#include <ext2fs/ext2_fs.h>
 
 const int NO_LIMIT = -1;
 
@@ -49,8 +51,21 @@ int main (int argc, char* argv[]) {
     }
 
     std::vector<char> ext2Dump = read_dump(argv[1]);
+    std::cout << "Successfully read ext2 dump with size " << ext2Dump.size() << " into memory." << std::endl;
 
-    std::cout << "Read ext2 dump with size " << ext2Dump.size() << std::endl;
+    int offset = 0;
+
+    // Search for the superblock
+    while (true) {
+        ext2_super_block* superBlock = (struct ext2_super_block*) &ext2Dump.at(offset);
+
+        if(superBlock->s_magic == EXT2_SUPER_MAGIC) {
+            std::cout << "Superblock found at offset " << offset << std::endl;
+            break;
+        } else {
+            offset += 512;
+        }
+    }
 
     return EXIT_SUCCESS;
 }
