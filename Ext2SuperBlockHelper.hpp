@@ -16,6 +16,16 @@ public:
     std::string get_human_readable_state();
 
     long get_block_size_in_bytes();
+    unsigned int get_block_count();
+    unsigned int get_reserved_block_count();
+    unsigned int get_free_block_count();
+    unsigned int get_used_block_count();
+    unsigned int get_blocks_per_group();
+
+    unsigned int get_inode_count();
+    unsigned int get_free_inode_count();
+    unsigned int get_used_inode_count();
+    unsigned int get_inodes_per_group();
 private:
     void find_super_block(const std::vector<char>& ext2_dump);
 

@@ -29,7 +29,7 @@ void Ext2SuperBlockHelper::to_stream(std::ostream &os) {
     os << "Superblock information" << std::endl;
 
     // First some general stuff about the file system
-    os << "* Located at offset " << offset << std::endl;
+    os << "* Located at offset " << offset << " (block group " << found_super_block->s_block_group_nr << ")" << std::endl;
     os << "* File System ext2 revision " << get_ext2_revision() << std::endl;
     os << "* Volume name: " << get_volume_name() << std::endl;
     os << "* State: " << get_human_readable_state() << std::endl;
@@ -37,7 +37,13 @@ void Ext2SuperBlockHelper::to_stream(std::ostream &os) {
     // Now the interesting stuff
     os << "---" << std::endl;
     os << "* Block size: " << get_block_size_in_bytes() << " bytes" << std::endl;
+    os << "* Total Blocks: " << get_block_count() << " (" << get_free_block_count() << " free, "
+       << get_used_block_count() << " used, " << get_reserved_block_count() << " reserved for super user)" << std::endl;
+    os << "* Blocks per group: " << get_blocks_per_group() << std::endl;
 
+    os << "* Total Inodes: " << get_inode_count() << " (" << get_free_inode_count() << " free, "
+       << get_used_inode_count() << " used)" << std::endl;
+    os << "* Inodes per group: " << get_inodes_per_group() << std::endl;
 }
 
 std::string Ext2SuperBlockHelper::get_ext2_revision() {
@@ -63,4 +69,40 @@ std::string Ext2SuperBlockHelper::get_human_readable_state() {
 
 long Ext2SuperBlockHelper::get_block_size_in_bytes() {
     return 1024 << found_super_block->s_log_block_size;
+}
+
+unsigned int Ext2SuperBlockHelper::get_block_count() {
+    return found_super_block->s_blocks_count;
+}
+
+unsigned int Ext2SuperBlockHelper::get_reserved_block_count() {
+    return found_super_block->s_r_blocks_count;
+}
+
+unsigned int Ext2SuperBlockHelper::get_free_block_count() {
+    return found_super_block->s_free_blocks_count;
+}
+
+unsigned int Ext2SuperBlockHelper::get_used_block_count() {
+    return get_block_count() - get_free_block_count();
+}
+
+unsigned int Ext2SuperBlockHelper::get_blocks_per_group() {
+    return found_super_block->s_blocks_per_group;
+}
+
+unsigned int Ext2SuperBlockHelper::get_inode_count() {
+    return found_super_block->s_inodes_count;
+}
+
+unsigned int Ext2SuperBlockHelper::get_free_inode_count() {
+    return found_super_block->s_free_inodes_count;
+}
+
+unsigned int Ext2SuperBlockHelper::get_used_inode_count() {
+    return get_inode_count() - get_free_inode_count();
+}
+
+unsigned int Ext2SuperBlockHelper::get_inodes_per_group() {
+    return found_super_block->s_inodes_per_group;
 }
