@@ -48,7 +48,8 @@ void Ext2SuperBlockHelper::to_stream(std::ostream &os) {
 
     os << "* Total Inodes: " << get_inode_count() << " (" << get_free_inode_count() << " free, "
        << get_used_inode_count() << " used)" << std::endl;
-    os << "* Inodes per group: " << get_inodes_per_group();
+    os << "* Inodes per group: " << get_inodes_per_group() << std::endl;
+    os << "* First Inode: " << found_super_block->s_first_ino;
 }
 
 std::string Ext2SuperBlockHelper::get_ext2_revision() {
