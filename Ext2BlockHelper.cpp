@@ -3,7 +3,7 @@
 
 #include "Ext2BlockHelper.hpp"
 
-Ext2BlockHelper::Ext2BlockHelper(const char* ext2_dump) {
+Ext2BlockHelper::Ext2BlockHelper(char* ext2_dump) {
     ext2_dump_ = ext2_dump;
     super_block_ = (ext2_super_block *) (ext2_dump + SUPER_BLOCK_OFFSET);
 
@@ -21,7 +21,7 @@ char *Ext2BlockHelper::get_block(unsigned int block_number) {
         exit(1);
     }
 
-    return ((char *) super_block_) + (block_number * get_block_size_in_bytes());
+    return ext2_dump_ + (block_number * get_block_size_in_bytes());
 }
 
 void Ext2BlockHelper::to_stream(std::ostream &os) {

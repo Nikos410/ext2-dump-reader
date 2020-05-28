@@ -7,7 +7,7 @@
 
 class Ext2BlockHelper {
 public:
-    Ext2BlockHelper(const char* ext2_dump);
+    Ext2BlockHelper(char* ext2_dump);
 
     char* get_block(unsigned int block_number);
 
@@ -20,7 +20,7 @@ private:
     unsigned int get_used_inode_count();
 
     const static unsigned int SUPER_BLOCK_OFFSET = 1024;
-    const char* ext2_dump_;
+    char* ext2_dump_;
     const ext2_super_block* super_block_ = nullptr;
 };
 
