@@ -26,6 +26,9 @@ public:
     unsigned int get_free_inode_count();
     unsigned int get_used_inode_count();
     unsigned int get_inodes_per_group();
+
+    long get_start_offset();
+    long get_end_offset();
 private:
     void find_super_block(const std::vector<char>& ext2_dump);
 

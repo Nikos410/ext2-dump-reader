@@ -34,8 +34,10 @@ void Ext2SuperBlockHelper::to_stream(std::ostream &os) {
     os << "Superblock information" << std::endl;
 
     // First some general stuff about the file system
-    os << "* Located at offset " << offset << " (block group " << found_super_block->s_block_group_nr << ")" << std::endl;
-    os << "* File System ext2 revision " << get_ext2_revision() << std::endl;
+    os << "* Located in block group " << found_super_block->s_block_group_nr << std::endl;
+    os << "* Start offset: " << get_start_offset() << std::endl;
+    os << "* End offset: " << get_end_offset() << std::endl;
+    os << "* Ext2 revision: " << get_ext2_revision() << std::endl;
     os << "* Volume name: " << get_volume_name() << std::endl;
     os << "* State: " << get_human_readable_state() << std::endl;
 
@@ -48,7 +50,6 @@ void Ext2SuperBlockHelper::to_stream(std::ostream &os) {
     os << "* Total Inodes: " << get_inode_count() << " (" << get_free_inode_count() << " free, "
        << get_used_inode_count() << " used)" << std::endl;
     os << "* Inodes per group: " << get_inodes_per_group() << std::endl;
-    os << "* First Inode: " << found_super_block->s_first_ino;
 }
 
 std::string Ext2SuperBlockHelper::get_ext2_revision() {
@@ -110,4 +111,12 @@ unsigned int Ext2SuperBlockHelper::get_used_inode_count() {
 
 unsigned int Ext2SuperBlockHelper::get_inodes_per_group() {
     return found_super_block->s_inodes_per_group;
+}
+
+long Ext2SuperBlockHelper::get_start_offset() {
+    return offset;
+}
+
+long Ext2SuperBlockHelper::get_end_offset() {
+    return offset + get_block_size_in_bytes();
 }
