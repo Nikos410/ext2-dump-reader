@@ -19,5 +19,11 @@ int main (int argc, char* argv[]) {
     std::cout << "Successfully read ext2 dump with size " << ext2_dump.size() << " into memory." << std::endl;
     Ext2BlockHelper block_helper(ext2_dump.data());
 
+    ext2_super_block* super_block = block_helper.get_super_block();
+    ext2_group_desc* first_group_descriptor = (ext2_group_desc*) block_helper.get_block_after((char*)super_block);
+    bool* block_bitmap = (bool*) block_helper.get_block(first_group_descriptor->bg_block_bitmap);
+    bool* inode_bitmap = (bool*) block_helper.get_block(first_group_descriptor->bg_inode_bitmap);
+    ext2_inode* inode_table = (ext2_inode*) block_helper.get_block(first_group_descriptor->bg_inode_table);
+
     return EXIT_SUCCESS;
 }
