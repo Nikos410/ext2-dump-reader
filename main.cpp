@@ -2,7 +2,7 @@
 #include <vector>
 
 #include "Ext2DumpReader.hpp"
-#include "Ext2SuperBlockHelper.hpp"
+#include "Ext2BlockHelper.hpp"
 
 int main (int argc, char* argv[]) {
     if (argc != 2) {
@@ -17,7 +17,7 @@ int main (int argc, char* argv[]) {
     std::vector<char>& ext2_dump = dump_reader.read_into_buffer(NO_LIMIT);
 
     std::cout << "Successfully read ext2 dump with size " << ext2_dump.size() << " into memory." << std::endl;
-    Ext2SuperBlockHelper super_block_helper(ext2_dump);
+    Ext2BlockHelper super_block_helper(ext2_dump);
 
     return EXIT_SUCCESS;
 }
