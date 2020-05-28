@@ -1,5 +1,5 @@
-#ifndef DUMPREADER_HPP
-#define DUMPREADER_HPP
+#ifndef EXT2DUMPREADER_HPP
+#define EXT2DUMPREADER_HPP
 
 #include <iostream>
 #include <vector>
@@ -18,5 +18,4 @@ private:
     std::vector<char> buffer;
 };
 
-
-#endif
+#endif // EXT2DUMPREADER_HPP

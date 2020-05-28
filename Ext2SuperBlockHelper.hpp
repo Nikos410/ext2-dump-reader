@@ -1,5 +1,5 @@
-#ifndef EXT2SUPERBLOCKREADER_HPP
-#define EXT2SUPERBLOCKREADER_HPP
+#ifndef EXT2SUPERBLOCKHELPER_HPP
+#define EXT2SUPERBLOCKHELPER_HPP
 
 #include <vector>
 #include <linux/fs.h>
@@ -28,4 +28,4 @@ inline std::ostream &operator <<(std::ostream& os, Ext2SuperBlockHelper& ext2_su
     return os;
 }
 
-#endif
+#endif // EXT2SUPERBLOCKHELPER_HPP
