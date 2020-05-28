@@ -17,7 +17,7 @@ int main (int argc, char* argv[]) {
     std::vector<char>& ext2_dump = dump_reader.read_into_buffer(NO_LIMIT);
 
     std::cout << "Successfully read ext2 dump with size " << ext2_dump.size() << " into memory." << std::endl;
-    Ext2BlockHelper super_block_helper(ext2_dump);
+    Ext2BlockHelper block_helper(ext2_dump.data());
 
     return EXIT_SUCCESS;
 }
