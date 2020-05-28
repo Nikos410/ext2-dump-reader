@@ -11,6 +11,11 @@ void Ext2SuperBlockHelper::find_super_block(const std::vector<char> &ext2_dump) 
     offset = 0;
 
     while (true) {
+        if (offset >= ext2_dump.size()) {
+            std::cerr << "Superblock not found." << std::endl;
+            exit(1);
+        }
+
         auto possible_super_block = (struct ext2_super_block *) &ext2_dump.at(offset);
 
         if (possible_super_block->s_magic == EXT2_SUPER_MAGIC) {
