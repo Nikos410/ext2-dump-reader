@@ -4,10 +4,6 @@
 #include "Ext2BlockHelper.hpp"
 
 Ext2BlockHelper::Ext2BlockHelper(const std::vector<char> &ext2_dump) {
-    find_super_block(ext2_dump);
-}
-
-void Ext2BlockHelper::find_super_block(const std::vector<char> &ext2_dump) {
     super_block = (ext2_super_block *) &ext2_dump.at(SUPER_BLOCK_OFFSET);
 
     if (super_block->s_magic != EXT2_SUPER_MAGIC) {
