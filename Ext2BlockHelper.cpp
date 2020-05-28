@@ -34,7 +34,7 @@ void Ext2BlockHelper::to_stream(std::ostream &os) {
     os << "* State: " << get_human_readable_state() << std::endl;
 
     // Now the interesting stuff ^^
-    os << "* Block size: " << get_block_size_in_bytes() << " bytes" << std::endl;
+    os << "* Block size: " << super_block->s_log_block_size << " (" << get_block_size_in_bytes() << " bytes)" << std::endl;
     os << "* Total Blocks: " << super_block->s_blocks_count << " (" << super_block->s_free_blocks_count << " free, "
        << get_used_block_count() << " used, " << super_block->s_r_blocks_count << " reserved for super user)" << std::endl;
     os << "* Blocks per group: " << super_block->s_blocks_per_group << std::endl;
