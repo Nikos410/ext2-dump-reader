@@ -39,8 +39,7 @@ void Ext2SuperBlockHelper::to_stream(std::ostream &os) {
     os << "* Volume name: " << get_volume_name() << std::endl;
     os << "* State: " << get_human_readable_state() << std::endl;
 
-    // Now the interesting stuff
-    os << "---" << std::endl;
+    // Now the interesting stuff ^^
     os << "* Block size: " << get_block_size_in_bytes() << " bytes" << std::endl;
     os << "* Total Blocks: " << get_block_count() << " (" << get_free_block_count() << " free, "
        << get_used_block_count() << " used, " << get_reserved_block_count() << " reserved for super user)" << std::endl;
