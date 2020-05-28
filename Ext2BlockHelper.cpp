@@ -15,6 +15,10 @@ Ext2BlockHelper::Ext2BlockHelper(char* ext2_dump) {
     std::cout << *this << std::endl;
 }
 
+ext2_super_block* Ext2BlockHelper::get_super_block() {
+    return super_block_;
+}
+
 char *Ext2BlockHelper::get_block(unsigned int block_number) {
     if (block_number > super_block_->s_blocks_count) {
         std::cerr << "Block number exceeds block count." << std::endl;
@@ -22,6 +26,12 @@ char *Ext2BlockHelper::get_block(unsigned int block_number) {
     }
 
     return ext2_dump_ + (block_number * get_block_size_in_bytes());
+}
+
+char *Ext2BlockHelper::get_block_after(const char *after) {
+    long offset = after - ext2_dump_;
+    unsigned int current_block = offset / get_block_size_in_bytes();
+    return get_block(current_block + 1);
 }
 
 void Ext2BlockHelper::to_stream(std::ostream &os) {
