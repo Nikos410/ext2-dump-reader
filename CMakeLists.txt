@@ -3,4 +3,4 @@ project(ext2_dump_reader)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(ext2_dump_reader main.cpp)
+add_executable(ext2_dump_reader main.cpp Ext2DumpReader.cpp Ext2DumpReader.hpp Ext2SuperBlockHelper.cpp Ext2SuperBlockHelper.hpp)

@@ -1,71 +1,23 @@
 #include <iostream>
-#include <fstream>
 #include <vector>
-#include <linux/fs.h>
-#include <ext2fs/ext2_fs.h>
 
-const int NO_LIMIT = -1;
-
-std::vector<char> read_dump(std::ifstream& openFile, int bufferSize) {
-    // Seek back to the beginning
-    openFile.seekg(0, std::ios::beg);
-
-    // Create buffer with the sice we detected earlier
-    std::vector<char> buffer(bufferSize);
-
-    // Read to the buffer
-    if (openFile.read(buffer.data(), bufferSize)) {
-        return buffer;
-    }
-
-    std::cerr << "Could not read file contents into buffer." << std::endl;
-    exit(1);
-}
-
-int getBufferSize(unsigned int fileSize, int limit) {
-    if (limit > 0 && fileSize > limit) {
-        return limit;
-    } else {
-        return fileSize;
-    }
-}
-
-std::vector<char> read_dump(std::string& filePath, int limit) {
-    // Open the file as binary and seek to the end
-    std::ifstream openFile(filePath, std::ios::binary | std::ios::ate);
-
-    // Since we seeked to the end immediately, our current read position is the fileSize
-    std::streamsize fileSize = openFile.tellg();
-
-    return read_dump(openFile, getBufferSize(fileSize, limit));
-}
-
-std::vector<char> read_dump(std::string filePath) {
-    return read_dump(filePath, NO_LIMIT);
-}
+#include "Ext2DumpReader.hpp"
+#include "Ext2SuperBlockHelper.hpp"
 
 int main (int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Ambiguous parameters. Please provide only the path of the ext2 dump file." << std::endl;
         exit(1);
     }
+    std::string dump_file_path = argv[1];
 
-    std::vector<char> ext2Dump = read_dump(argv[1]);
-    std::cout << "Successfully read ext2 dump with size " << ext2Dump.size() << " into memory." << std::endl;
+    std::cout << "Loading ext2 dump from " << dump_file_path <<std::endl;
 
-    int offset = 0;
+    Ext2DumpReader dump_reader(dump_file_path);
+    std::vector<char>& ext2_dump = dump_reader.read_into_buffer(NO_LIMIT);
 
-    // Search for the superblock
-    while (true) {
-        ext2_super_block* superBlock = (struct ext2_super_block*) &ext2Dump.at(offset);
-
-        if(superBlock->s_magic == EXT2_SUPER_MAGIC) {
-            std::cout << "Superblock found at offset " << offset << std::endl;
-            break;
-        } else {
-            offset += 512;
-        }
-    }
+    std::cout << "Successfully read ext2 dump with size " << ext2_dump.size() << " into memory." << std::endl;
+    Ext2SuperBlockHelper super_block_helper(ext2_dump);
 
     return EXIT_SUCCESS;
 }
