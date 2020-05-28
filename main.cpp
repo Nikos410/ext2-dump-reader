@@ -25,5 +25,18 @@ int main (int argc, char* argv[]) {
     bool* inode_bitmap = (bool*) block_helper.get_block(first_group_descriptor->bg_inode_bitmap);
     ext2_inode* inode_table = (ext2_inode*) block_helper.get_block(first_group_descriptor->bg_inode_table);
 
+    ext2_inode* temp = inode_table;
+    for (int i = 0; i < super_block->s_inodes_per_group; i++) {
+        // 0x4000
+        if ((temp->i_mode >> 14) & 1) {
+            std::cout << "Inode " << i << ": directory." << std::endl;
+        }
+
+        // 0x8000
+        if ((temp->i_mode >> 15) & 1) {
+            std::cout << "Inode " << i << ": regular file." << std::endl;
+        }
+    }
+
     return EXIT_SUCCESS;
 }
