@@ -36,6 +36,8 @@ int main (int argc, char* argv[]) {
         if ((temp->i_mode >> 15) & 1) {
             std::cout << "Inode " << i << ": regular file." << std::endl;
         }
+
+        temp++;
     }
 
     return EXIT_SUCCESS;
