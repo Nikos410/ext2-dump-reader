@@ -11,8 +11,28 @@ Ext2BlockHelper::Ext2BlockHelper(char* ext2_dump) {
         std::cerr << "Super Block not found at offset " << SUPER_BLOCK_OFFSET << std::endl;
         exit(1);
     }
+}
 
-    std::cout << *this << std::endl;
+void Ext2BlockHelper::print_superblock_information() {
+    std::cout << "######################" << std::endl;
+    std::cout << "Superblock information" << std::endl;
+
+    // First some general stuff about the file system
+    std::cout << "* Located in block group " << super_block_->s_block_group_nr << std::endl;
+    std::cout << "* Ext2 revision: " << get_ext2_revision() << std::endl;
+    std::cout << "* Volume name: " << super_block_->s_volume_name << std::endl;
+    std::cout << "* State: " << get_human_readable_state() << std::endl;
+
+    // Now the interesting stuff ^^
+    std::cout << "* Total Blocks: " << super_block_->s_blocks_count << " (" << super_block_->s_free_blocks_count << " free, "
+       << get_used_block_count() << " used, " << super_block_->s_r_blocks_count << " reserved for super user)" << std::endl;
+    std::cout << "* Block size: " << super_block_->s_log_block_size << " (" << get_block_size_in_bytes() << " bytes)" << std::endl;
+    std::cout << "* Blocks per group: " << super_block_->s_blocks_per_group << std::endl;
+
+    std::cout << "* Total Inodes: " << super_block_->s_inodes_count << " (" << super_block_->s_free_inodes_count << " free, "
+       << get_used_inode_count() << " used)" << std::endl;
+    std::cout << "* Inodes per group: " << super_block_->s_inodes_per_group << std::endl;
+    std::cout << "######################" << std::endl;
 }
 
 ext2_super_block* Ext2BlockHelper::get_super_block() {
@@ -32,27 +52,6 @@ char *Ext2BlockHelper::get_block_after(const char *after) {
     long offset = after - ext2_dump_;
     unsigned int current_block = offset / get_block_size_in_bytes();
     return get_block(current_block + 1);
-}
-
-void Ext2BlockHelper::to_stream(std::ostream &os) {
-    os << "######################" << std::endl;
-    os << "Superblock information" << std::endl;
-
-    // First some general stuff about the file system
-    os << "* Located in block group " << super_block_->s_block_group_nr << std::endl;
-    os << "* Ext2 revision: " << get_ext2_revision() << std::endl;
-    os << "* Volume name: " << super_block_->s_volume_name << std::endl;
-    os << "* State: " << get_human_readable_state() << std::endl;
-
-    // Now the interesting stuff ^^
-    os << "* Block size: " << super_block_->s_log_block_size << " (" << get_block_size_in_bytes() << " bytes)" << std::endl;
-    os << "* Total Blocks: " << super_block_->s_blocks_count << " (" << super_block_->s_free_blocks_count << " free, "
-       << get_used_block_count() << " used, " << super_block_->s_r_blocks_count << " reserved for super user)" << std::endl;
-    os << "* Blocks per group: " << super_block_->s_blocks_per_group << std::endl;
-
-    os << "* Total Inodes: " << super_block_->s_inodes_count << " (" << super_block_->s_free_inodes_count << " free, "
-       << get_used_inode_count() << " used)" << std::endl;
-    os << "* Inodes per group: " << super_block_->s_inodes_per_group << std::endl;
 }
 
 std::string Ext2BlockHelper::get_ext2_revision() {

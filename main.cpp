@@ -18,6 +18,7 @@ int main (int argc, char* argv[]) {
 
     std::cout << "Successfully read ext2 dump with size " << ext2_dump.size() << " into memory." << std::endl;
     Ext2BlockHelper block_helper(ext2_dump.data());
+    block_helper.print_superblock_information();
 
     ext2_super_block* super_block = block_helper.get_super_block();
     ext2_group_desc* first_group_descriptor = (ext2_group_desc*) block_helper.get_block_after((char*)super_block);
