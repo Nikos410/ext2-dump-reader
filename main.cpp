@@ -23,21 +23,32 @@ int main (int argc, char* argv[]) {
     ext2_group_desc* first_group_descriptor = (ext2_group_desc*) block_helper.get_block_after((char*)super_block);
     bool* block_bitmap = (bool*) block_helper.get_block(first_group_descriptor->bg_block_bitmap);
     bool* inode_bitmap = (bool*) block_helper.get_block(first_group_descriptor->bg_inode_bitmap);
-    ext2_inode* inode_table = (ext2_inode*) block_helper.get_block(first_group_descriptor->bg_inode_table);
+    ext2_inode* inode = (ext2_inode*) block_helper.get_block(first_group_descriptor->bg_inode_table);
 
-    ext2_inode* temp = inode_table;
     for (int i = 0; i < super_block->s_inodes_per_group; i++) {
         // 0x4000
-        if ((temp->i_mode >> 14) & 1) {
+        if ((inode->i_mode >> 14) & 1) {
             std::cout << "Inode " << i << ": directory." << std::endl;
+            char* first_block = block_helper.get_block(inode->i_block[0]);
+            for (int j = 0; j < block_helper.get_block_size_in_bytes(); j++) {
+                std::cout << first_block[j];
+            }
+
+            std::cout << "End of directory." << std::endl;
         }
 
         // 0x8000
-        if ((temp->i_mode >> 15) & 1) {
+        if ((inode->i_mode >> 15) & 1) {
             std::cout << "Inode " << i << ": regular file." << std::endl;
+            char* first_block = block_helper.get_block(inode->i_block[0]);
+            for (int j = 0; j < block_helper.get_block_size_in_bytes(); j++) {
+                std::cout << first_block[j];
+            }
+
+            std::cout << "End of file." << std::endl;
         }
 
-        temp++;
+        inode++;
     }
 
     return EXIT_SUCCESS;

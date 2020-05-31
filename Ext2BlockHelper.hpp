@@ -14,10 +14,11 @@ public:
     char* get_block_after(const char* after);
 
     void to_stream(std::ostream& os);
+
+    long get_block_size_in_bytes();
 private:
     std::string get_ext2_revision();
     std::string get_human_readable_state();
-    long get_block_size_in_bytes();
     unsigned int get_used_block_count();
     unsigned int get_used_inode_count();
 
