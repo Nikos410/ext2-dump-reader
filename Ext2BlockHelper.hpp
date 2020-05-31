@@ -8,14 +8,13 @@
 class Ext2BlockHelper {
 public:
     Ext2BlockHelper(char* ext2_dump);
-
     void print_superblock_information();
+
+    long get_block_size_in_bytes();
 
     ext2_super_block* get_super_block();
     char* get_block(unsigned int block_number);
     char* get_block_after(const char* after);
-
-    long get_block_size_in_bytes();
 private:
     std::string get_ext2_revision();
     std::string get_human_readable_state();
