@@ -3,6 +3,15 @@
 
 #include "Ext2DumpReader.hpp"
 #include "Ext2BlockHelper.hpp"
+#include "InodeHelper.hpp"
+
+inline std::ostream& operator <<(std::ostream& os, std::vector<char>& vector) {
+    for (char& current : vector) {
+        os << current;
+    }
+
+    return os;
+}
 
 int main (int argc, char* argv[]) {
     if (argc != 2) {
@@ -27,26 +36,15 @@ int main (int argc, char* argv[]) {
     ext2_inode* inode = (ext2_inode*) block_helper.get_block(first_group_descriptor->bg_inode_table);
 
     for (int i = 0; i < super_block->s_inodes_per_group; i++) {
-        // 0x4000
-        if ((inode->i_mode >> 14) & 1) {
-            std::cout << "Inode " << i << ": directory." << std::endl;
-            char* first_block = block_helper.get_block(inode->i_block[0]);
-            for (int j = 0; j < block_helper.get_block_size_in_bytes(); j++) {
-                std::cout << first_block[j];
-            }
-
-            std::cout << "End of directory." << std::endl;
+        InodeHelper inode_helper(block_helper, inode);
+        if (inode_helper.is_directory()) {
+            std::cout << "Inode " << i << ": Directory." << std::endl;
+            std::cout << inode_helper.copy_data() << std::endl;
         }
 
-        // 0x8000
-        if ((inode->i_mode >> 15) & 1) {
-            std::cout << "Inode " << i << ": regular file." << std::endl;
-            char* first_block = block_helper.get_block(inode->i_block[0]);
-            for (int j = 0; j < block_helper.get_block_size_in_bytes(); j++) {
-                std::cout << first_block[j];
-            }
-
-            std::cout << "End of file." << std::endl;
+        if (inode_helper.is_regularFile()) {
+            std::cout << "Inode " << i << ": Regular file." << std::endl;
+            std::cout << inode_helper.copy_data() << std::endl;
         }
 
         inode++;
