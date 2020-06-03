@@ -26,7 +26,7 @@ void read_block_group(ext2_group_desc* group_descriptor, BlockHelper& block_help
         }
 
         if (inode_helper.is_regularFile()) {
-            std::cout << "Inode " << i << ": Regular file." << std::endl;
+            std::cout << "Inode " << i << ": Regular file - extracting file data..." << std::endl;
             std::vector<char>& data = inode_helper.copy_data();
 
             std::ofstream inode_file;
