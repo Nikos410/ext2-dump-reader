@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <sstream>
 
 #include "Ext2DumpReader.hpp"
 #include "Ext2BlockHelper.hpp"
@@ -28,7 +29,15 @@ void read_block_group(ext2_group_desc* group_descriptor, Ext2BlockHelper& block_
 
         if (inode_helper.is_regularFile()) {
             std::cout << "Inode " << i << ": Regular file." << std::endl;
-            std::cout << inode_helper.copy_data() << std::endl;
+            std::vector<char>& data = inode_helper.copy_data();
+
+            std::ofstream inode_file;
+            std::stringstream file_name;
+            file_name << "inode_";
+            file_name << i;
+            inode_file.open(file_name.str().c_str());
+            inode_file << data;
+            inode_file.close();
         }
 
         inode++;
