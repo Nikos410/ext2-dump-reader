@@ -16,8 +16,6 @@ inline std::ostream& operator <<(std::ostream& os, std::vector<char>& vector) {
 
 void read_block_group(ext2_group_desc* group_descriptor, Ext2BlockHelper& block_helper) {
     ext2_super_block* super_block = block_helper.get_super_block();
-    bool* block_bitmap = (bool*) block_helper.get_block(group_descriptor->bg_block_bitmap);
-    bool* inode_bitmap = (bool*) block_helper.get_block(group_descriptor->bg_inode_bitmap);
     ext2_inode* inode = (ext2_inode*) block_helper.get_block(group_descriptor->bg_inode_table);
 
     for (int i = 0; i < super_block->s_inodes_per_group; i++) {
