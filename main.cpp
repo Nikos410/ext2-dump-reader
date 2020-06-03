@@ -36,6 +36,8 @@ void read_block_group(ext2_group_desc* group_descriptor, Ext2BlockHelper& block_
             inode_file.open(file_name.str().c_str());
             inode_file << data;
             inode_file.close();
+
+            data.clear();
         }
 
         inode++;
