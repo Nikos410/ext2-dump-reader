@@ -8,6 +8,7 @@
 class BlockHelper {
 public:
     BlockHelper(char* ext2_dump);
+    ext2_super_block* as_superblock_if_present(char* ptr);
     void print_superblock_information();
 
     long get_block_size_in_bytes();

@@ -5,11 +5,23 @@
 
 BlockHelper::BlockHelper(char* ext2_dump) {
     ext2_dump_ = ext2_dump;
-    super_block_ = (ext2_super_block *) (ext2_dump + SUPER_BLOCK_OFFSET);
+    ext2_super_block* primary_super_block = as_superblock_if_present(ext2_dump_ + SUPER_BLOCK_OFFSET);
 
-    if (super_block_->s_magic != EXT2_SUPER_MAGIC) {
-        std::cerr << "Super Block not found at offset " << SUPER_BLOCK_OFFSET << std::endl;
+    if (primary_super_block == nullptr) {
+        std::cerr << "Primary super Block not found at offset " << SUPER_BLOCK_OFFSET << std::endl;
         exit(1);
+    } else {
+        super_block_ = primary_super_block;
+    }
+}
+
+ext2_super_block* BlockHelper::as_superblock_if_present(char *ptr) {
+    ext2_super_block* possible_super_block = (ext2_super_block *) ptr;
+
+    if (possible_super_block->s_magic == EXT2_SUPER_MAGIC) {
+        return possible_super_block;
+    } else {
+        return nullptr;
     }
 }
 
