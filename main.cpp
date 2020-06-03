@@ -76,5 +76,7 @@ int main (int argc, char* argv[]) {
         group_descriptor++;
     }
 
+    ext2_dump.clear();
+
     return EXIT_SUCCESS;
 }
