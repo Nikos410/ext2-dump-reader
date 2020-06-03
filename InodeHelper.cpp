@@ -41,15 +41,39 @@ void InodeHelper::copy_data_block_if_neccessary(unsigned int block_number) {
 
 void InodeHelper::copy_indirect_block_if_neccessary(unsigned int block_number) {
     char* indirect_block = block_helper_.get_block(block_number);
-    // TODO: Call copy_data_block for all referenced blocks
+    unsigned int* direct_block_number = (unsigned int*) indirect_block;
+
+    for (int i = 0; i < block_helper_.get_block_size_in_bytes() / sizeof(unsigned int); i++) {
+        if (*direct_block_number == 0) {
+            break;
+        }
+        copy_data_block_if_neccessary(*direct_block_number);
+        direct_block_number++;
+    }
 }
 
 void InodeHelper::copy_doubly_indirect_block_if_neccessary(unsigned int block_number) {
     char* doubly_indirect_block = block_helper_.get_block(block_number);
-    // TODO: Call copy_indirect_block for all referenced blocks
+    unsigned int* indirect_block_number = (unsigned int*) doubly_indirect_block;
+
+    for (int i = 0; i < block_helper_.get_block_size_in_bytes() / sizeof(unsigned int); i++) {
+        if (*indirect_block_number == 0) {
+            break;
+        }
+        copy_indirect_block_if_neccessary(*indirect_block_number);
+        indirect_block_number++;
+    }
 }
 
 void InodeHelper::copy_trebly_indirect_block_if_neccessary(unsigned int block_number) {
-    char* trebly = block_helper_.get_block(block_number);
-    // TODO: Call copy_doubly_indirect_block for all referenced blocks
+    char* trebly_indirect_block = block_helper_.get_block(block_number);
+    unsigned int* doubly_indirect_block_number = (unsigned int*) trebly_indirect_block;
+
+    for (int i = 0; i < block_helper_.get_block_size_in_bytes() / sizeof(unsigned int); i++) {
+        if (*doubly_indirect_block_number == 0) {
+            break;
+        }
+        copy_doubly_indirect_block_if_neccessary(*doubly_indirect_block_number);
+        doubly_indirect_block_number++;
+    }
 }
