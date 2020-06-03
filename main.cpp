@@ -2,8 +2,8 @@
 #include <vector>
 #include <sstream>
 
-#include "Ext2DumpReader.hpp"
-#include "Ext2BlockHelper.hpp"
+#include "DumpReader.hpp"
+#include "BlockHelper.hpp"
 #include "InodeHelper.hpp"
 
 inline std::ostream& operator <<(std::ostream& os, std::vector<char>& vector) {
@@ -14,7 +14,7 @@ inline std::ostream& operator <<(std::ostream& os, std::vector<char>& vector) {
     return os;
 }
 
-void read_block_group(ext2_group_desc* group_descriptor, Ext2BlockHelper& block_helper) {
+void read_block_group(ext2_group_desc* group_descriptor, BlockHelper& block_helper) {
     ext2_super_block* super_block = block_helper.get_super_block();
     ext2_inode* inode = (ext2_inode*) block_helper.get_block(group_descriptor->bg_inode_table);
 
@@ -53,11 +53,11 @@ int main (int argc, char* argv[]) {
 
     std::cout << "Loading ext2 dump from " << dump_file_path <<std::endl;
 
-    Ext2DumpReader dump_reader(dump_file_path);
+    DumpReader dump_reader(dump_file_path);
     std::vector<char>& ext2_dump = dump_reader.read_into_buffer(NO_LIMIT);
 
     std::cout << "Successfully read ext2 dump with size " << ext2_dump.size() << " into memory." << std::endl;
-    Ext2BlockHelper block_helper(ext2_dump.data());
+    BlockHelper block_helper(ext2_dump.data());
     block_helper.print_superblock_information();
 
     ext2_super_block* super_block = block_helper.get_super_block();

@@ -7,9 +7,9 @@
 
 const static char NO_LIMIT = -1;
 
-class Ext2DumpReader {
+class DumpReader {
 public:
-    explicit Ext2DumpReader(std::string& dump_file_path);
+    explicit DumpReader(std::string& dump_file_path);
     std::vector<char>& read_into_buffer(long limit);
 private:
     std::ifstream dump_file_stream;

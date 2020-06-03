@@ -5,9 +5,9 @@
 #include <linux/fs.h>
 #include <ext2fs/ext2_fs.h>
 
-class Ext2BlockHelper {
+class BlockHelper {
 public:
-    Ext2BlockHelper(char* ext2_dump);
+    BlockHelper(char* ext2_dump);
     void print_superblock_information();
 
     long get_block_size_in_bytes();

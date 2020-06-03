@@ -1,6 +1,6 @@
-#include "Ext2DumpReader.hpp"
+#include "DumpReader.hpp"
 
-Ext2DumpReader::Ext2DumpReader(std::string &dump_file_path) {
+DumpReader::DumpReader(std::string &dump_file_path) {
     // Open the file as binary and seek to the end
     dump_file_stream = std::ifstream(dump_file_path, std::ios::binary | std::ios::ate);
 
@@ -8,7 +8,7 @@ Ext2DumpReader::Ext2DumpReader(std::string &dump_file_path) {
     dump_file_size = dump_file_stream.tellg();
 }
 
-std::vector<char>& Ext2DumpReader::read_into_buffer(long limit) {
+std::vector<char>& DumpReader::read_into_buffer(long limit) {
     buffer_size = limit > 0 && dump_file_size > limit ? limit : dump_file_size;
 
     // Seek back to the beginning
