@@ -13,6 +13,28 @@ inline std::ostream& operator <<(std::ostream& os, std::vector<char>& vector) {
     return os;
 }
 
+void read_block_group(ext2_group_desc* group_descriptor, Ext2BlockHelper& block_helper) {
+    ext2_super_block* super_block = block_helper.get_super_block();
+    bool* block_bitmap = (bool*) block_helper.get_block(group_descriptor->bg_block_bitmap);
+    bool* inode_bitmap = (bool*) block_helper.get_block(group_descriptor->bg_inode_bitmap);
+    ext2_inode* inode = (ext2_inode*) block_helper.get_block(group_descriptor->bg_inode_table);
+
+    for (int i = 0; i < super_block->s_inodes_per_group; i++) {
+        InodeHelper inode_helper(block_helper, inode);
+        if (inode_helper.is_directory()) {
+            std::cout << "Inode " << i << ": Directory." << std::endl;
+            std::cout << inode_helper.copy_data() << std::endl;
+        }
+
+        if (inode_helper.is_regularFile()) {
+            std::cout << "Inode " << i << ": Regular file." << std::endl;
+            std::cout << inode_helper.copy_data() << std::endl;
+        }
+
+        inode++;
+    }
+}
+
 int main (int argc, char* argv[]) {
     if (argc != 2) {
         std::cerr << "Ambiguous parameters. Please provide only the path of the ext2 dump file." << std::endl;
@@ -30,24 +52,19 @@ int main (int argc, char* argv[]) {
     block_helper.print_superblock_information();
 
     ext2_super_block* super_block = block_helper.get_super_block();
-    ext2_group_desc* first_group_descriptor = (ext2_group_desc*) block_helper.get_block_after((char*)super_block);
-    bool* block_bitmap = (bool*) block_helper.get_block(first_group_descriptor->bg_block_bitmap);
-    bool* inode_bitmap = (bool*) block_helper.get_block(first_group_descriptor->bg_inode_bitmap);
-    ext2_inode* inode = (ext2_inode*) block_helper.get_block(first_group_descriptor->bg_inode_table);
+    ext2_group_desc* group_descriptor = (ext2_group_desc*) block_helper.get_block_after((char*)super_block);
 
-    for (int i = 0; i < super_block->s_inodes_per_group; i++) {
-        InodeHelper inode_helper(block_helper, inode);
-        if (inode_helper.is_directory()) {
-            std::cout << "Inode " << i << ": Directory." << std::endl;
-            std::cout << inode_helper.copy_data() << std::endl;
-        }
+    // TODO: Do this better
+    unsigned int group_count = super_block->s_blocks_count / super_block->s_blocks_per_group;
+    if (super_block->s_blocks_count % super_block->s_blocks_per_group != 0) {
+        group_count++;
+    }
 
-        if (inode_helper.is_regularFile()) {
-            std::cout << "Inode " << i << ": Regular file." << std::endl;
-            std::cout << inode_helper.copy_data() << std::endl;
-        }
+    std::cout << "Block group count: " << group_count << std::endl;
 
-        inode++;
+    for (int i = 0; i < group_count; i++) {
+        read_block_group(group_descriptor, block_helper);
+        group_descriptor++;
     }
 
     return EXIT_SUCCESS;
