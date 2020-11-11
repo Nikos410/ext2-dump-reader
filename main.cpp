@@ -45,9 +45,9 @@ void read_block_group(ext2_group_desc* group_descriptor, BlockHelper& block_help
 }
 
 int main (int argc, char* argv[]) {
-    if (argc != 2) {
-        std::cerr << "Ambiguous parameters. Please provide only the path of the ext2 dump file." << std::endl;
-        exit(1);
+    if (argc <= 1) {
+        std::cerr << "Please specify device or dump file." << std::endl;
+        return EXIT_FAILURE;
     }
     std::string dump_file_path = argv[1];
 
