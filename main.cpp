@@ -51,8 +51,6 @@ int main (int argc, char* argv[]) {
     }
     std::string dump_file_path = argv[1];
 
-    std::cout << "Loading ext2 dump from " << dump_file_path <<std::endl;
-
     DumpReader dump_reader(dump_file_path);
     std::vector<char>& ext2_dump = dump_reader.read_into_buffer(NO_LIMIT);
 

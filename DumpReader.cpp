@@ -1,14 +1,19 @@
 #include "DumpReader.hpp"
 
 DumpReader::DumpReader(std::string &dump_file_path) {
+    std::cout << "Opening " << dump_file_path << std::endl;
+
     // Open the file as binary and seek to the end
     dump_file_stream = std::ifstream(dump_file_path, std::ios::binary | std::ios::ate);
 
     // Since we seeked to the end immediately, our current read position is the fileSize
     dump_file_size = dump_file_stream.tellg();
+
+    std::cout << "File system size is " << dump_file_size << " bytes" << std::endl;
 }
 
 std::vector<char>& DumpReader::read_into_buffer(long limit) {
+    std::cout << "Loading ext2 file system into memory." <<std::endl;
     buffer_size = limit > 0 && dump_file_size > limit ? limit : dump_file_size;
 
     // Seek back to the beginning
